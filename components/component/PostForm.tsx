@@ -1,10 +1,9 @@
 "use client";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { SendIcon } from "./Icons";
 import { useRef, useState } from "react";
 import { addPostAction } from "@/lib/actions";
+import { SubmmitButton } from "./SubmmitButton";
 
 export default function PostForm() {
   const [error, setError] = useState<string | undefined>("");
@@ -41,10 +40,7 @@ export default function PostForm() {
             className="flex-1 rounded-full bg-muted px-4 py-2"
             name="post"
           />
-          <Button variant="ghost" size="icon">
-            <SendIcon className="h-5 w-5 text-muted-foreground" />
-            <span className="sr-only">Tweet</span>
-          </Button>
+          <SubmmitButton />
         </form>
       </div>
       {error && <p className="text-destructive text-sm ml-14">{error}</p>}
