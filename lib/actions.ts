@@ -4,7 +4,14 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "./prisma";
 
-export async function addPostAction(formData: FormData) {
+type State = {
+  error?: string | undefined;
+  success: boolean;
+};
+export async function addPostAction(
+  prevState: State,
+  formData: FormData
+): Promise<State> {
   const { userId } = auth();
 
   try {
