@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "./prisma";
+import { revalidatePath } from "next/cache";
 
 type State = {
   error?: string | undefined;
@@ -28,6 +29,9 @@ export async function addPostAction(
         authorId: userId!,
       },
     });
+
+    revalidatePath("/"); //投稿後にリロードせずに投稿を表示させる(理想は詳細のパスを指定する)
+
     return {
       success: true,
       error: undefined,
