@@ -69,7 +69,7 @@ export default async function PostList() {
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <ClockIcon className="h-5 w-5" />
-              <span>{post.timestamp}</span>
+              <span>{post.createdAt.toLocaleString()}</span>
             </div>
           </div>
           {post.comments && (
