@@ -26,7 +26,11 @@ export const Post = ({ post }: any) => {
         </div>
         <div className="flex items-center justify-between mt-4">
           <div className="flex items-center gap-2">
-            <PostInteraction />
+            <PostInteraction
+              postId={post.id}
+              initialLikes={post.likes.map((like: any) => like.id)}
+              commentNumber={post._count.replies}
+            />
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <ClockIcon className="h-5 w-5" />
