@@ -1,9 +1,14 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useOptimistic, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { HeartIcon, MessageCircleIcon, Share2Icon } from "./Icons";
 import { likeAction } from "@/lib/actions";
+
+interface likeState {
+  likeCount: number;
+  isLiked: boolean;
+}
 
 type PostInteractionProps = {
   postId: string;
@@ -18,35 +23,36 @@ export const PostInteraction = ({
   commentNumber,
   userId,
 }: PostInteractionProps) => {
-  const [likeState, setlikeState] = useState({
+  const initialiState = {
     likeCount: initialLikes.length,
     isLiked: userId ? initialLikes.includes(userId) : false, //initialLikesの配列の中に自分のユーザidが入っていたらそれは、いいねを押したということになる。
-  });
+  };
+  const [optimisticLike, addOptimisticLike] = useOptimistic<likeState, void>(
+    initialiState,
+    (currentState) => ({
+      likeCount: currentState.isLiked
+        ? currentState.likeCount - 1
+        : currentState.likeCount + 1,
+      isLiked: !currentState.isLiked,
+    })
+  );
 
-  const handleLikeSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleLikeSubmit = async () => {
     try {
-      setlikeState((prev) => ({
-        likeCount: prev.isLiked ? prev.likeCount - 1 : prev.likeCount + 1,
-        isLiked: !prev.isLiked, //反転させる
-      }));
+      addOptimisticLike();
       await likeAction(postId);
     } catch (err) {
-      setlikeState((prev) => ({
-        likeCount: prev.isLiked ? prev.likeCount + 1 : prev.likeCount - 1,
-        isLiked: !prev.isLiked, //反転させる
-      }));
       console.log(err);
     }
   };
   return (
     <div className="flex items-center">
-      <form onSubmit={handleLikeSubmit}>
+      <form action={handleLikeSubmit}>
         <Button variant="ghost" size="icon">
           <HeartIcon className="h-5 w-5 text-muted-foreground" />
         </Button>
       </form>
-      <span className="-m1-1">{likeState.likeCount}</span>
+      <span className="-m1-1">{optimisticLike.likeCount}</span>
       <Button variant="ghost" size="icon">
         <MessageCircleIcon className="h-5 w-5 text-muted-foreground" />
       </Button>
