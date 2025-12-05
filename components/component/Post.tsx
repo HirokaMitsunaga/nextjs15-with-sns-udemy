@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { HeartIcon, MessageCircleIcon, Share2Icon, ClockIcon } from "./Icons";
 import { PostInteraction } from "./PostInteraction";
 
-export const Post = ({ post }: any) => {
+export const Post = ({ post, userId }: { post: any; userId: string }) => {
   return (
     <div className="space-y-4">
       <div
@@ -28,8 +28,9 @@ export const Post = ({ post }: any) => {
           <div className="flex items-center gap-2">
             <PostInteraction
               postId={post.id}
-              initialLikes={post.likes.map((like: any) => like.id)}
+              initialLikes={post.likes.map((like: any) => like.userId)}
               commentNumber={post._count.replies}
+              userId={userId}
             />
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">

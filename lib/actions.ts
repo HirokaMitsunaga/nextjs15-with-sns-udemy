@@ -55,3 +55,37 @@ export async function addPostAction(
     }
   }
 }
+
+export const likeAction = async (postId: string) => {
+  "use server";
+  const { userId } = auth();
+  if (!userId) {
+    throw new Error("ユーザーは認証されていません");
+  }
+  try {
+    const exisitingLike = await prisma.like.findFirst({
+      where: {
+        postId,
+        userId,
+      },
+    });
+    if (exisitingLike) {
+      await prisma.like.delete({
+        where: {
+          id: exisitingLike.id,
+        },
+      });
+      revalidatePath("/");
+    } else {
+      await prisma.like.create({
+        data: {
+          postId,
+          userId,
+        },
+      });
+      revalidatePath("/");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
